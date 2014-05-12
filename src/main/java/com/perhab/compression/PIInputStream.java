@@ -8,7 +8,7 @@ import java.math.RoundingMode;
 
 public class PIInputStream extends InputStream {
 	
-	private static final MathContext MC = new MathContext(1024, RoundingMode.FLOOR);
+	private MathContext mc = new MathContext(4096, RoundingMode.FLOOR);
 
 	/** 1024 */
 	private static final BigDecimal BD1024 = BigDecimal.valueOf(1024);
@@ -42,8 +42,9 @@ public class PIInputStream extends InputStream {
 	public int read() throws IOException {
 		BigDecimal part120n2 = BD120.multiply(n.pow(2)).subtract(BD89.multiply(n)).add(BD16);
 		BigDecimal part512n4 = BD512.multiply(n.pow(4)).subtract(BD1024.multiply(n.pow(3))).add(BD712.multiply(n.pow(2))).subtract(BD206.multiply(n)).add(BD21);
-		BigDecimal p = part120n2.divide(part512n4, MC);
+		BigDecimal p = part120n2.divide(part512n4, mc);
 		x = BD16.multiply(x).add(p).remainder(BigDecimal.ONE);
+		//init next round
 		n = n.add(BigDecimal.ONE);
 		return BD16.multiply(x).intValue();
 	}

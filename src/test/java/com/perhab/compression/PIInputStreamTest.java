@@ -67,9 +67,13 @@ public class PIInputStreamTest {
 	}
 	
 	@Test
-	public void testRead1000Places() throws IOException {
-		String places = readNPlaces(1000);
-		assertEquals(PI.subSequence(0, 1000), places);
+	public void testAllPlaces() throws IOException {
+		@Cleanup
+		PIInputStream pi = new PIInputStream();
+		for (int i = 0; i < Integer.MAX_VALUE && i < PI.length(); i++) {
+			String place = String.format("%01x", pi.read());
+			assertEquals(i + "th place was wrong.", PI.substring(i,i + 1), place);
+		}
 	}
 	
 	private String readNPlaces(int n) throws IOException {
