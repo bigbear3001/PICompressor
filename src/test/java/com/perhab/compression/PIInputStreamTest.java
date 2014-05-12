@@ -55,6 +55,18 @@ public class PIInputStreamTest {
 	}
 	
 	@Test
+	public void testRead200Places() throws IOException {
+		String places = readNPlaces(200);
+		assertEquals(PI.subSequence(0, 200), places);
+	}
+	
+	@Test
+	public void testRead500Places() throws IOException {
+		String places = readNPlaces(500);
+		assertEquals(PI.subSequence(0, 500), places);
+	}
+	
+	@Test
 	public void testRead1000Places() throws IOException {
 		String places = readNPlaces(1000);
 		assertEquals(PI.subSequence(0, 1000), places);

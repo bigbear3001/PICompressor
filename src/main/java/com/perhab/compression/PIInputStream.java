@@ -8,7 +8,7 @@ import java.math.RoundingMode;
 
 public class PIInputStream extends InputStream {
 	
-	private static final MathContext MC = new MathContext(256, RoundingMode.HALF_UP);
+	private static final MathContext MC = new MathContext(1024, RoundingMode.FLOOR);
 
 	/** 1024 */
 	private static final BigDecimal BD1024 = BigDecimal.valueOf(1024);
