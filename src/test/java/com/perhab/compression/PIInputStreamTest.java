@@ -3,12 +3,16 @@ package com.perhab.compression;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import lombok.Cleanup;
 
 import org.junit.Test;
 
 public class PIInputStreamTest {
+	
+	
+	
 	
 	/**
 	 * A few places of pi from http://members.shaw.ca/francislyster/pi/pistats/pibase16.pdf
@@ -69,16 +73,27 @@ public class PIInputStreamTest {
 	@Test
 	public void testAllPlaces() throws IOException {
 		@Cleanup
-		PIInputStream pi = new PIInputStream();
+		InputStream pi = new PIInputStream();
 		for (int i = 0; i < Integer.MAX_VALUE && i < PI.length(); i++) {
 			String place = String.format("%01x", pi.read());
 			assertEquals(i + "th place was wrong.", PI.substring(i,i + 1), place);
 		}
 	}
 	
+	@Test
+	public void test2Digits() throws IOException {
+		@Cleanup
+		InputStream pi = new PIInputStream(PIInputStream.Mode.TWO_DIGITS);
+		StringBuilder res = new StringBuilder();
+		for(int i = 0; i < 100; i++) {
+			res.append(String.format("%02x", pi.read()));
+		}
+		assertEquals(PI.subSequence(0, 200), res.toString());
+	}
+	
 	private String readNPlaces(int n) throws IOException {
 		@Cleanup
-		PIInputStream pi = new PIInputStream();
+		InputStream pi = new PIInputStream();
 		StringBuilder res = new StringBuilder();
 		for (int i = 0; i < n; i++) {
 			res.append(String.format("%01x", pi.read()));

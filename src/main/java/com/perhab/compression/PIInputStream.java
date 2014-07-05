@@ -2,51 +2,88 @@ package com.perhab.compression;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class PIInputStream extends InputStream {
 	
-	private MathContext mc = new MathContext(4096, RoundingMode.FLOOR);
+	@AllArgsConstructor
+	public static enum Mode {
+		SINGLE_DIGIT(16, 1),
+		TWO_DIGITS(256, 2);
+		
+		private final int multiplicator;
+		
+		private final int step;
 
-	/** 1024 */
-	private static final BigDecimal BD1024 = BigDecimal.valueOf(1024);
+	}
 	
-	/** 712 */
-	private static final BigDecimal BD712 = BigDecimal.valueOf(712);
+	public PIInputStream() {
+		this(Mode.SINGLE_DIGIT);
+	}
 	
-	/** 512 */
-	private static final BigDecimal BD512 = BigDecimal.valueOf(512);
+	public PIInputStream(Mode outputMode) {
+		mode = outputMode;
+	}
 	
-	/** 206 */
-	private static final BigDecimal BD206 = BigDecimal.valueOf(206);
-	
-	/** 120 */
-	private static final BigDecimal BD120 = BigDecimal.valueOf(120);
-	
-	/** 89 */
-	private static final BigDecimal BD89 = BigDecimal.valueOf(89);
+	private final Mode mode;
 
-	/** 21 */
-	private static final BigDecimal BD21 = BigDecimal.valueOf(21);
-	
-	/** 16 */
-	private static final BigDecimal BD16 = BigDecimal.valueOf(16);
-	
-	BigDecimal x = BigDecimal.ZERO;
-	
-	BigDecimal n = BigDecimal.ONE;
+	int nextN = 0;
 	
 	@Override
 	public int read() throws IOException {
-		BigDecimal part120n2 = BD120.multiply(n.pow(2)).subtract(BD89.multiply(n)).add(BD16);
-		BigDecimal part512n4 = BD512.multiply(n.pow(4)).subtract(BD1024.multiply(n.pow(3))).add(BD712.multiply(n.pow(2))).subtract(BD206.multiply(n)).add(BD21);
-		BigDecimal p = part120n2.divide(part512n4, mc);
-		x = BD16.multiply(x).add(p).remainder(BigDecimal.ONE);
-		//init next round
-		n = n.add(BigDecimal.ONE);
-		return BD16.multiply(x).intValue();
+		log.trace("Calculate place {}", nextN);
+		double result = (4 * sum(1, nextN)) - (2 * sum(4, nextN)) - sum(5, nextN) - sum(6, nextN);
+		while (result < 0) {
+			result += 1;
+		}
+		nextN += mode.step;
+		return (int) ((result % 1) * mode.multiplicator);
+	}
+
+	private double sum(int addition, int n) {
+		double sum = 0.0;
+		for (int k = 0; k <= n; k++) {
+			int denominator = 8*k + addition;
+			sum += modPow(16, n - k, denominator) / denominator;
+		}
+		
+		for (int k = n + 1; true; k++) {
+			double nextSum = sum;
+			nextSum += Math.pow(16, n - k) / (8*k + addition);
+			if (Double.isNaN(nextSum)) {
+				break;
+			} else if (nextSum != sum) {
+				sum = nextSum;
+			} else {
+				break;
+			}
+		}
+		return sum;
+	}
+	
+	/**
+	 * base ^ e % m
+	 * according to http://en.wikipedia.org/wiki/Modular_exponentiation#Right-to-left_binary_method
+	 * @param base 
+	 * @param e
+	 * @param m
+	 * @return
+	 */
+	private double modPow(long base, long e, long m) {
+		assert (m - 1) * (base % m) < base;
+		long result = 1;
+		base = base % m;
+		while (e > 0) {
+			if (e % 2 == 1) {
+				result = (result * base) % m;
+			}
+			e = e >> 1;
+			base = (base * base) % m;
+		}
+		return result; 
 	}
 
 }

@@ -1,4 +1,5 @@
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -7,28 +8,26 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.zip.DeflaterInputStream;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.InflaterInputStream;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
-import org.apache.commons.compress.compressors.pack200.Pack200CompressorInputStream;
-import org.apache.commons.compress.compressors.pack200.Pack200CompressorOutputStream;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+
+import com.perhab.compression.PICompressorOutputStream;
+import com.perhab.compression.PIDecompressorInputStream;
 
 
 @Slf4j
 public class CompressionTest {
 	
-	public static final String UNCOMPRESSED_STRING = "This could be a normal text that can be compressed very well i guess. That is if it's long enough to make a difference since the dictionary must eventually transfered as well.";
+	public static final String UNCOMPRESSED_STRING = "This could be a normal text that can be compressed very well, i guess. That is if it's long enough to make a difference since the dictionary must eventually enocded as well. As this text is in english it really should work very well. The longer this sentence gets the better it can be compressed.";
 	
 	@Test
 	public void testGzip() throws IOException {
@@ -43,6 +42,11 @@ public class CompressionTest {
 	@Test
 	public void testBZip2() throws IOException {
 		testCompression("BZip2", BZip2CompressorOutputStream.class, BZip2CompressorInputStream.class);
+	}
+	
+	@Test
+	public void testPI() throws IOException {
+		testCompression("PI", PICompressorOutputStream.class, PIDecompressorInputStream.class);
 	}
 	
 	
