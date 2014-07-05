@@ -3,87 +3,54 @@ package com.perhab.compression;
 import java.io.IOException;
 import java.io.InputStream;
 
-import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
+import com.perhab.math.BBP;
+import com.perhab.math.BBP.Mode;
+
+/**
+ * PIInputStream gets you a all hexadecimal digits of PI with the help of Bailey�Borwein�Plouffe
+ * @see http://en.wikipedia.org/w/index.php?title=Bailey%E2%80%93Borwein%E2%80%93Plouffe_formula&oldid=609165265 
+ * @author bigbear3001
+ */
 @Slf4j
 public class PIInputStream extends InputStream {
-	
-	@AllArgsConstructor
-	public static enum Mode {
-		SINGLE_DIGIT(16, 1),
-		TWO_DIGITS(256, 2);
-		
-		private final int multiplicator;
-		
-		private final int step;
-
-	}
-	
+	/**
+	 * Initialize a new PIInputStream returning one hexadecimal digit per {@link #read()}
+	 */
 	public PIInputStream() {
 		this(Mode.SINGLE_DIGIT);
 	}
 	
-	public PIInputStream(Mode outputMode) {
+	/**
+	 * Initialize a new PIInputStream returning the specified digits per {@link #read()}
+	 * @param outputMode - mode to define how many digits to return for each read
+	 */
+	public PIInputStream(@NonNull Mode outputMode) {
 		mode = outputMode;
 	}
 	
+	/**
+	 * Mode to define how many digits to return for each read
+	 */
 	private final Mode mode;
 
+	/**
+	 * next place to return if read is called again.
+	 */
 	int nextN = 0;
 	
 	@Override
 	public int read() throws IOException {
 		log.trace("Calculate place {}", nextN);
-		double result = (4 * sum(1, nextN)) - (2 * sum(4, nextN)) - sum(5, nextN) - sum(6, nextN);
-		while (result < 0) {
-			result += 1;
+		try {
+			return BBP.getPlace(nextN, mode);
+		} finally {
+			nextN += mode.getReturnDigits();
 		}
-		nextN += mode.step;
-		return (int) ((result % 1) * mode.multiplicator);
 	}
 
-	private double sum(int addition, int n) {
-		double sum = 0.0;
-		for (int k = 0; k <= n; k++) {
-			int denominator = 8*k + addition;
-			sum += modPow(16, n - k, denominator) / denominator;
-		}
-		
-		for (int k = n + 1; true; k++) {
-			double nextSum = sum;
-			nextSum += Math.pow(16, n - k) / (8*k + addition);
-			if (Double.isNaN(nextSum)) {
-				break;
-			} else if (nextSum != sum) {
-				sum = nextSum;
-			} else {
-				break;
-			}
-		}
-		return sum;
-	}
+
 	
-	/**
-	 * base ^ e % m
-	 * according to http://en.wikipedia.org/wiki/Modular_exponentiation#Right-to-left_binary_method
-	 * @param base 
-	 * @param e
-	 * @param m
-	 * @return
-	 */
-	private double modPow(long base, long e, long m) {
-		assert (m - 1) * (base % m) < base;
-		long result = 1;
-		base = base % m;
-		while (e > 0) {
-			if (e % 2 == 1) {
-				result = (result * base) % m;
-			}
-			e = e >> 1;
-			base = (base * base) % m;
-		}
-		return result; 
-	}
-
 }

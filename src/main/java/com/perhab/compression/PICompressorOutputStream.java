@@ -5,6 +5,8 @@ import java.io.OutputStream;
 
 import lombok.Cleanup;
 
+import com.perhab.math.BBP;
+
 public class PICompressorOutputStream extends OutputStream {
 
 	private OutputStream compressed;
@@ -37,7 +39,7 @@ public class PICompressorOutputStream extends OutputStream {
 
 	private byte[] findBlock(byte[] block) throws IOException {
 		@Cleanup
-		PIInputStream pi = new PIInputStream(PIInputStream.Mode.TWO_DIGITS);
+		PIInputStream pi = new PIInputStream(BBP.Mode.TWO_DIGITS);
 		byte[] buffer = new byte[blocksize];
 		int searchpos = 0;
 		int bufferpos = 0;

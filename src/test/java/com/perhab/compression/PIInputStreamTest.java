@@ -1,6 +1,6 @@
 package com.perhab.compression;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,13 +9,15 @@ import lombok.Cleanup;
 
 import org.junit.Test;
 
+import com.perhab.math.BBP;
+
 public class PIInputStreamTest {
 	
 	
 	
 	
 	/**
-	 * A few places of pi from http://members.shaw.ca/francislyster/pi/pistats/pibase16.pdf
+	 * A few places of pi (hexadecimal) from http://members.shaw.ca/francislyster/pi/pistats/pibase16.pdf
 	 */
 	public static final String PI = "243f6a8885a308d313198a2e03707344a4093822299f31d0082efa98ec4e6c89452821e638d01377be"
 			+ "5466cf34e90c6cc0ac29b7c97c50dd3f84d5b5b54709179216d5d98979fb1bd1310ba698dfb5ac2ffd72dbd01adfb7b8e1afed6a"
@@ -83,7 +85,7 @@ public class PIInputStreamTest {
 	@Test
 	public void test2Digits() throws IOException {
 		@Cleanup
-		InputStream pi = new PIInputStream(PIInputStream.Mode.TWO_DIGITS);
+		InputStream pi = new PIInputStream(BBP.Mode.TWO_DIGITS);
 		StringBuilder res = new StringBuilder();
 		for(int i = 0; i < 100; i++) {
 			res.append(String.format("%02x", pi.read()));
