@@ -59,6 +59,14 @@ public class BBP {
 		}
 		return sum;
 	}
+	
+	/**
+	 * @param n - place of pi to return
+	 * @return nth digit of pi in hexadecimal system
+	 */
+	public static int getPlace(int n) {
+		return getPlace(n, Mode.SINGLE_DIGIT);
+	}
 
 	/**
 	 * @param n - place of pi to return

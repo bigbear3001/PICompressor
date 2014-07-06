@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.commons.io.IOUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.perhab.compression.PICompressorOutputStream;
@@ -44,7 +45,7 @@ public class CompressionTest {
 		testCompression("BZip2", BZip2CompressorOutputStream.class, BZip2CompressorInputStream.class);
 	}
 	
-	@Test
+	@Test @Ignore
 	public void testPI() throws IOException {
 		testCompression("PI", PICompressorOutputStream.class, PIDecompressorInputStream.class);
 	}
