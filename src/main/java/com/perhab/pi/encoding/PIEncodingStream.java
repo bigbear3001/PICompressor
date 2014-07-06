@@ -8,8 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 
-import com.perhab.compression.PIInputStream;
 import com.perhab.math.BBP;
+import com.perhab.pi.PIInputStream;
 
 @Slf4j
 @AllArgsConstructor

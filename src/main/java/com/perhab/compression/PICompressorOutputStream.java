@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import lombok.Cleanup;
 
 import com.perhab.math.BBP;
+import com.perhab.pi.PIInputStream;
 
 public class PICompressorOutputStream extends OutputStream {
 

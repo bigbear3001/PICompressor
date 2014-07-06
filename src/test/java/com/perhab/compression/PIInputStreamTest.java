@@ -10,6 +10,7 @@ import lombok.Cleanup;
 import org.junit.Test;
 
 import com.perhab.math.BBP;
+import com.perhab.pi.PIInputStream;
 
 public class PIInputStreamTest {
 	

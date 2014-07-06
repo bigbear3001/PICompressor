@@ -1,4 +1,4 @@
-package com.perhab.compression;
+package com.perhab.pi;
 
 import java.io.IOException;
 import java.io.InputStream;
