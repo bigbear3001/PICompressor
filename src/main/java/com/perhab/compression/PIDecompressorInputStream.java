@@ -3,17 +3,21 @@ package com.perhab.compression;
 import java.io.IOException;
 import java.io.InputStream;
 
-import lombok.AllArgsConstructor;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 
-@AllArgsConstructor
+import com.perhab.pi.encoding.PIDecodingStream;
+
 public class PIDecompressorInputStream extends InputStream {
 
-	private final InputStream compressed;
+	private final InputStream decompressed;
+	
+	public PIDecompressorInputStream(InputStream in) throws IOException {
+		decompressed = new PIDecodingStream(new GzipCompressorInputStream(in));
+	}
 	
 	@Override
 	public int read() throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		return decompressed.read();
 	}
 	
 }
