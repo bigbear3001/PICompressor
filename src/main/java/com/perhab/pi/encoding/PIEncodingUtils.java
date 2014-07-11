@@ -30,8 +30,16 @@ public class PIEncodingUtils {
 	protected static int readFullInt(InputStream in) throws IOException {
 		int full = 0;
 		for (int i = 0; i < INT_SIZE_IN_BYTES; i++) {
+			int next = in.read();
+			if (next == -1) {
+				if (i == 0) {
+					return next;
+				} else {
+					throw new IOException("Incomplete Integer Sequence at the end of the file");
+				}
+			}
 			full <<= Byte.SIZE;
-			full += in.read();
+			full += next;
 		}
 		if (full < 0) {
 			return -1;

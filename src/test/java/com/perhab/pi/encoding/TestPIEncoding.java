@@ -5,16 +5,13 @@ import static org.junit.Assert.assertArrayEquals;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+
+import lombok.Cleanup;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.junit.Test;
 
-import com.perhab.pi.encoding.PIDecodingStream;
-import com.perhab.pi.encoding.PIEncodingStream;
-
-import lombok.Cleanup;
-import lombok.extern.slf4j.Slf4j;
-@Slf4j
 public class TestPIEncoding {
 	@Test
 	public void testFindingDigits() throws IOException {
@@ -23,6 +20,21 @@ public class TestPIEncoding {
 		byte[] decoded = decode(encoded);
 		
 		assertArrayEquals(message, decoded);
+	}
+	
+	@Test
+	public void testIncompleteData() throws IOException {
+		byte[] message = new byte[]{(byte) 255};
+		byte[] encoded = encode(message);
+		try {
+			byte[] decoded = decode(Arrays.copyOfRange(encoded, 0, 3));
+		} catch (IOException e) {
+			if(!e.getMessage().contains("Incomplete Integer Sequence")) {
+				throw e;
+			}
+			return;
+		}
+		throw new RuntimeException("test was expected to throw exception because of incomplete data.");
 	}
 
 	private byte[] decode(byte[] encodedMessage) throws IOException {
