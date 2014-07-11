@@ -22,4 +22,11 @@ public class PIDecodingStream extends InputStream {
 		Mode mode = BBP.Mode.TWO_DIGITS;
 		return BBP.getPlace(place * mode.getReturnDigits(), mode);
 	}
+	
+	@Override
+	public void close() throws IOException {
+		in.close();
+		super.close();
+	}
+	
 }

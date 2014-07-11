@@ -50,6 +50,12 @@ public class PIEncodingStream extends OutputStream {
 		}
 		return PIEncodingUtils.toByteArray(place);
 	}
+	
+	@Override
+	public void close() throws IOException {
+		out.close();
+		super.close();
+	}
 
 
 }
