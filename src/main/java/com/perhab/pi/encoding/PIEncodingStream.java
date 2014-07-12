@@ -1,10 +1,11 @@
 package com.perhab.pi.encoding;
 
+import static com.perhab.pi.encoding.PIEncodingUtils.MASK;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 
-import lombok.AllArgsConstructor;
 import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,17 +13,15 @@ import com.perhab.math.BBP;
 import com.perhab.pi.PIInputStream;
 
 @Slf4j
-@AllArgsConstructor
 public class PIEncodingStream extends OutputStream {
-
+	
 	final OutputStream out;
 	
-	/**
-	 * Mask to be able to ignore the higher 24 bits of an int. 
-	 */
-	private static final int MASK = Integer.MAX_VALUE >> (24 - 1);
+	private static final HashMap<Integer, ByteArray> cache = new HashMap<Integer, ByteArray>();
 	
-	private static final HashMap<Integer, ByteArray> cache = new HashMap<Integer, ByteArray>(); 
+	public PIEncodingStream(OutputStream write) {
+		out = write;
+	}
 	
 	@Override
 	public void write(int b) throws IOException {

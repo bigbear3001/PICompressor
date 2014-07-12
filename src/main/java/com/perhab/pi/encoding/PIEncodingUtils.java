@@ -7,6 +7,11 @@ public class PIEncodingUtils {
 	
 	private static final int INT_SIZE_IN_BYTES = Integer.SIZE / Byte.SIZE;
 	
+	/**
+	 * Mask to be able to ignore the higher 24 bits of an int. 
+	 */
+	public static final int MASK = Integer.MAX_VALUE >> (24 - 1);
+	
 	protected static byte[] toByteArray(int place) {
 		
 		byte[] bytes = new byte[INT_SIZE_IN_BYTES];
@@ -45,5 +50,14 @@ public class PIEncodingUtils {
 			return -1;
 		}
 		return full;
+	}
+
+	public static byte[] diff(byte[] base, byte[] changed) {
+		assert base.length == changed.length;
+		byte[] diff = new byte[base.length];
+		for(int i = 0; i < base.length; i++) {
+			diff[i] = (byte) (changed[i] ^ base[i]);
+		}
+		return diff;
 	}
 }

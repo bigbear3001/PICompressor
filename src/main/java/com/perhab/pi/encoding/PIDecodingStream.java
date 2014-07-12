@@ -6,12 +6,13 @@ import java.io.InputStream;
 import com.perhab.math.BBP;
 import com.perhab.math.BBP.Mode;
 
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
 public class PIDecodingStream extends InputStream {
 
-	final InputStream in;
+	private final InputStream in;
+	
+	public PIDecodingStream(InputStream read) {
+		in = read;
+	}
 
 	@Override
 	public int read() throws IOException {
