@@ -3,8 +3,9 @@ package com.perhab.streams;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
+import com.perhab.pi.encoding.PIEncodingUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.ToString;
@@ -44,16 +45,12 @@ public class MarkableInputStream extends InputStream {
 	
 	@Override
 	public int read() throws IOException {
-		if (bufferBlocks == null) {
-			return in.read();
-		} else {
-			if (stillToReadFromBuffer > 0){
-				stillToReadFromBuffer--;
-				return readFromBuffer();
-			} else {
-				return writeToBuffer(in.read());
-			}
+		byte[] b = new byte[1];
+		int read = read(b, 0, 1);
+		if (read == -1) {
+			return read;
 		}
+		return b[0] & PIEncodingUtils.MASK;
 	}
 	
 	@Override
@@ -106,22 +103,6 @@ public class MarkableInputStream extends InputStream {
 		}
 		bufferpos += (len - remaining);
 		return len;
-	}
-
-	private int writeToBuffer(int read) {
-		int block = bufferpos / blockSize;
-		int pos = bufferpos++ % blockSize;
-		if (bufferBlocks.size() <= block) {
-			bufferBlocks.add(new BufferBlock(new byte[blockSize]));
-		}
-		bufferBlocks.get(block).data[pos] = (byte) read;
-		return read;
-	}
-
-	private int readFromBuffer() {
-		int block = bufferpos / blockSize;
-		int pos = bufferpos++ % blockSize;
-		return bufferBlocks.get(block).data[pos];
 	}
 
 	@Override

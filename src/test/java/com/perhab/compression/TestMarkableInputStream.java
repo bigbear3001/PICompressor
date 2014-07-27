@@ -15,7 +15,7 @@ import com.perhab.streams.MarkableInputStream;
 
 public class TestMarkableInputStream {
 	
-	private static final byte[] DATA = new byte[]{0,1,2,3,4,5,6,7,8,9};
+	private static final byte[] DATA = new byte[]{0,1,2,3,4,5,6,7,8,9,(byte) 129};
 
 	@Test
 	public void testWrapping() throws IOException {
@@ -90,5 +90,14 @@ public class TestMarkableInputStream {
 		assertArrayEquals(new byte[]{5, 6}, read);
 
 	}
-
+	
+	@Test
+	public void testSingleByteRead() throws IOException {
+		@Cleanup InputStream dataStream = new MarkableInputStream(new ByteArrayInputStream(DATA));
+		ByteArrayInputStream comparison = new ByteArrayInputStream(DATA);
+		for (int i = 0; i <= DATA.length; i++) {
+			assertEquals("Difference for byte " + i, comparison.read(), dataStream.read());
+		}
+	}
+	
 }
