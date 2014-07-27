@@ -3,18 +3,34 @@ package com.perhab.streams;
 import java.io.IOException;
 import java.io.InputStream;
 
-import lombok.Delegate;
 import lombok.Getter;
 
+/**
+ * InputStream that allows to get the current position in the input stream as integer.
+ * @author bigbear3001
+ */
 public class PositionCountingInputStream extends InputStream {
-	
+
+	/**
+	 * Encapsulated input stream to get the data from.
+	 */
 	private final InputStream in;
 	
+	/**
+	 * Current position in the input stream.
+	 */
 	@Getter
 	private int pos = 0;
 	
+	/**
+	 * Position of the mark set for the input stream.
+	 */
 	private int markPos = 0;
 	
+	/**
+	 * Initialize a new counting input stream that uses the given input stream to get data.
+	 * @param is - input stream to get the data from
+	 */
 	public PositionCountingInputStream(InputStream is) {
 		in = is;
 	}
@@ -63,6 +79,11 @@ public class PositionCountingInputStream extends InputStream {
 		super.close();
 	}
 	
+	/**
+	 * Wrap the given input stream into a position counting input stream if needed.
+	 * @param is - input stream to wrap.
+	 * @return position counting input stream
+	 */
 	public static PositionCountingInputStream wrap(InputStream is) {
 		if (is instanceof PositionCountingInputStream) {
 			return (PositionCountingInputStream) is;
