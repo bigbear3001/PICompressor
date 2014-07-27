@@ -49,6 +49,13 @@ public class TestMarkableInputStream {
 		assertArrayEquals(new byte[]{4, 5}, read);
 	}
 	
+	@Test(expected=IOException.class)
+	public void testResetWithoutMark() throws IOException {
+		@Cleanup InputStream dataStream = new MarkableInputStream(new ByteArrayInputStream(DATA));
+		
+		dataStream.reset();
+	}
+	
 	
 	@Test
 	public void testBufferOverflow() throws IOException {
