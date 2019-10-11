@@ -29,7 +29,7 @@ import com.perhab.compression.PIDecompressorInputStream;
 public class CompressionTest {
 	
 	public static final String UNCOMPRESSED_STRING = "This could be a normal text that can be compressed very well, i guess. "
-			+ "That is if it's long enough to make a difference since the dictionary must eventually enocded as well. "
+			+ "That is if it's long enough to make a difference since the dictionary must eventually encoded as well. "
 			+ "As this text is in english it really should work very well. The longer this paragraph gets the better it can be compressed. "
 			+ "At least that is the theory but can the english language really challenge modern compression algorithms? "
 			+ "Quick find a few more words so we can really demonstrate how those things work.";
